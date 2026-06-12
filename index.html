@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trilochan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ================================================================
+       HERO
+       Canvas renders the wave beam (subtle white glow on black).
+       hero-bg-cards holds 4 content cards that are invisible until
+       the wave sweeps over them — each card fades in as the beam
+       passes, hinting at content. User cannot interact until they
+       scroll down to the full cards section below.
+  ================================================================ -->
+  <section class="hero" id="hero">
+    <canvas class="hero-canvas" id="heroCanvas"></canvas>
+    <div class="hero-bg-cards" id="heroBgCards"></div>
+    <h1 class="hero-name">
+      <span class="hl">T</span><span class="hl">r</span><span class="hl">i</span><span class="hl">l</span><span class="hl">o</span><span class="hl">c</span><span class="hl">h</span><span class="hl">a</span><span class="hl">n</span>
+    </h1>
+  </section>
+
+  <!-- ================================================================
+       HORIZONTAL CARDS SECTION
+       .cards-track is a tall div creating scroll room.
+       .cards-scene is sticky — the rail translates horizontally
+       as the user scrolls vertically.
+  ================================================================ -->
+  <div class="cards-track" id="cardsTrack">
+    <div class="cards-scene" id="cardsScene">
+      <div class="cards-rail" id="cardsRail"></div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       FOOTER / CONTACT
+       Update LINKEDIN_URL and GITHUB_URL with your actual profile URLs.
+       Gmail compose link uses trilochanmunigela@gmail.com as recipient.
+  ================================================================ -->
+  <footer class="footer" id="footer">
+    <p class="footer-eyebrow">Get in touch</p>
+    <h2 class="footer-heading">Let's talk.</h2>
+    <div class="footer-links">
+      <a class="footer-btn"
+         href="https://www.linkedin.com/in/sai-trilochan-munigela/"
+         target="_blank" rel="noopener noreferrer">
+        LinkedIn
+      </a>
+      <a class="footer-btn"
+         href="https://github.com/Lochan4"
+         target="_blank" rel="noopener noreferrer">
+        GitHub
+      </a>
+      <a class="footer-btn"
+         href="https://mail.google.com/mail/?view=cm&to=trilochanmunigela@gmail.com&su=Hey%20Trilochan"
+         target="_blank" rel="noopener noreferrer">
+        Email me
+      </a>
+    </div>
+  </footer>
+
+  <!-- ================================================================
+       CONTENT
+       Edit copy here. JS reads this array for both the hero
+       background cards and the full horizontal scroll cards.
+  ================================================================ -->
+  <script>
+    const content = [
+      {
+        label: "Co-Founder",
+        heading: "Stop applying. Start interviewing.",
+        body: "Leaps is a hiring intelligence system that transforms your resume into a continuous, automated job search engine. Answer once — work setup, location, EEOC, skills. Leaps scans live job boards in real time, scores your fit across six dimensions, rewrites your resume line by line, then applies to every matched role for you: filling forms, attaching your resume, answering screening questions. Ghost jobs filtered. Run complete.",
+        url: "https://leaps.to",
+      },
+      {
+        label: "Heuretos",
+        heading: "The kill was the move.",
+        body: "Built an AI learning platform. Working product. Entered investor rounds. Competitor monitoring, roadmap viability, and base model improvement rates converged on one answer: CAC would eat us before growth could save us. At 22, I killed every outreach I was dying to close. That clarity is what let me move forward.",
+        url: "https://www.heuretos.com/",
+      },
+      {
+        label: "Founding Engineer",
+        heading: "I build systems that think",
+        body: "Founding AI Engineer at 8bit.ai. Two years shipping production LLM systems — RAG pipelines, multi-agent orchestration, real-time classification at scale. Not demos, not experiments. Systems processing real volume with real stakes.",
+        url: "https://www.8bit.ai/",
+      },
+      {
+        label: "8bit.ai",
+        heading: "40,000 emails. Zero triage.",
+        body: "Customer Journeys: real-time intent-classification over RabbitMQ, processing 40K+ emails per month. Severity scoring routes issues before they escalate — autonomous diagnostic reasoning generates SOP-aligned remediation actions proactively. Multi-modal RAG across 4,000+ documents: 35% accuracy gain, 40% token reduction. Banking underwriting pipeline: conversational agent from document collection through creditworthiness report. Sole architect, end to end.",
+        url: "https://www.8bit.ai/",
+      },
+      {
+        label: "Neutrino",
+        heading: "90% of reporting, automated.",
+        body: "Multi-agent NL-to-SQL and generative analytics system built at 8bit.ai. Dynamic metadata-schema generation enables adaptive table-to-query mapping — the system reasons about schema structure, not just syntax. Conceived as a PostgreSQL text-to-SQL prototype, scaled to a production multi-agent architecture that eliminated manual reporting workflows entirely.",
+        url: "https://www.8bit.ai/",
+      },
+      {
+        label: "Research",
+        heading: "Fine-tuning at scale",
+        body: "Fine-tuned Phi-2 (2.7B) on 99,866 cybersecurity Q&A pairs using LoRA — 3.1% trainable parameters, NVIDIA H100. Built leaps.to: autonomous job agent that scores resumes against JDs, enhances them, and applies via LinkedIn without human input.",
+        url: "https://github.com/Lochan4/cybersecurity-qa-lora",
+      },
+    ];
+  </script>
+  <script src="script.js"></script>
+
+</body>
+</html>

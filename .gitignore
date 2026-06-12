@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Logs
+*.log
+
+# Local env
+.env
+.env.local
+
+# Claude Code internals
+.claude/
+.llm_snapshot/
+CLAUDE.md
+askr_state/

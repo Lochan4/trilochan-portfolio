@@ -1,0 +1,331 @@
+/* ================================================================
+   RESET & BASE
+================================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background: #000;
+  overflow-x: hidden;
+}
+
+/* ================================================================
+   HERO
+================================================================ */
+
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Wave beam canvas — behind everything */
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Background cards — rhomboid layout.
+   ◆  Card 2 (above center)
+   Card 1 (left middle)          Card 4 (right middle)
+   ◆  Card 3 (below center)
+   Opacity is JS-driven at 60fps — no CSS transition. */
+.hero-bg-cards {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-bg-card {
+  position: absolute;
+  width: clamp(160px, 18vw, 220px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  opacity: 0.08;
+}
+
+/* Card 1 — extreme left, vertically centered */
+.hero-bg-card:nth-child(1) {
+  left: clamp(40px, 6vw, 100px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Card 2 — upper center, above the name */
+.hero-bg-card:nth-child(2) {
+  left: 50%;
+  top: 16%;
+  transform: translateX(-50%);
+}
+
+/* Card 3 — lower center, below the name */
+.hero-bg-card:nth-child(3) {
+  left: 50%;
+  bottom: 16%;
+  transform: translateX(-50%);
+}
+
+/* Card 4 — extreme right, same height as card 1 */
+.hero-bg-card:nth-child(4) {
+  right: clamp(40px, 6vw, 100px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hero-bg-card-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.hero-bg-card-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+  font-size: clamp(14px, 1.6vw, 19px);
+  color: #fff;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+
+/* Name — above canvas and bg cards */
+.hero-name {
+  position: relative;
+  z-index: 2;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: clamp(48px, 8vw, 88px);
+  color: #fff;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ================================================================
+   HORIZONTAL CARDS SECTION
+================================================================ */
+
+.cards-track {
+  position: relative;
+  width: 100%;
+  /* height set dynamically by JS */
+}
+
+.cards-scene {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: #000;
+}
+
+/* Rail translates horizontally as the user scrolls vertically.
+   Left/right padding is set by JS (setRailCenterPadding) so card 1
+   starts centered and the last card ends centered.
+   align-items: stretch makes all cards share the height of the tallest. */
+.cards-rail {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(20px, 3vw, 40px);
+  will-change: transform;
+}
+
+.card {
+  flex: 0 0 clamp(280px, 34vw, 460px);
+  min-height: clamp(320px, 48vh, 500px);
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0; /* padding lives on .card-face */
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Inner face — receives the press scale so it doesn't conflict
+   with the JS-controlled 3D transform on the outer .card */
+.card-face {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  padding: clamp(28px, 3.5vw, 48px);
+  transition: transform 0.1s ease-in;
+}
+
+.card:active .card-face {
+  transform: scale(0.96) translateY(4px);
+}
+
+.card-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+  font-size: clamp(22px, 2.8vw, 38px);
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+}
+
+.card-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(13px, 1.3vw, 16px);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.8;
+}
+
+.card-num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.16);
+  text-align: right;
+}
+
+/* ================================================================
+   FOOTER / CONTACT
+================================================================ */
+
+.footer {
+  background: #000;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 clamp(32px, 8vw, 120px);
+  gap: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-eyebrow {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.footer-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+  font-size: clamp(40px, 7vw, 96px);
+  color: #fff;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.footer-btn {
+  display: inline-block;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 14px 28px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.footer-btn:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ================================================================
+   MOBILE — max-width 768px
+   Disable horizontal scroll. Stack cards vertically.
+================================================================ */
+
+@media (max-width: 768px) {
+
+  /* Hide hero bg cards — 4 cards don't fit narrow viewports */
+  .hero-bg-cards {
+    display: none;
+  }
+
+  /* Cards section: normal vertical layout */
+  .cards-track {
+    height: auto !important;
+  }
+
+  .cards-scene {
+    position: relative !important;
+    height: auto !important;
+    overflow: visible;
+    flex-direction: column;
+    padding: 48px 20px;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .cards-rail {
+    flex-direction: column;
+    transform: none !important;
+    padding: 0;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .card {
+    flex: none;
+    width: 100%;
+    min-height: 280px;
+    transform: none !important;
+  }
+}
