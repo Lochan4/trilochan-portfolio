@@ -122,6 +122,44 @@ body {
   user-select: none;
 }
 
+/* Scroll indicator — bottom-center of hero */
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  animation: scrollPulse 2.2s ease-in-out infinite;
+}
+
+.hero-scroll-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.hero-scroll-arrow {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.28);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  transform: rotate(45deg);
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.35; transform: translateX(-50%) translateY(0); }
+  50%       { opacity: 1;    transform: translateX(-50%) translateY(5px); }
+}
+
 /* ================================================================
    HORIZONTAL CARDS SECTION
 ================================================================ */

@@ -7,6 +7,7 @@
 const heroEl      = document.getElementById('hero');
 const heroCanvas  = document.getElementById('heroCanvas');
 const heroBgCards = document.getElementById('heroBgCards');
+const heroScroll  = document.getElementById('heroScroll');
 const cardsTrack  = document.getElementById('cardsTrack');
 const cardsScene  = document.getElementById('cardsScene');
 const cardsRail   = document.getElementById('cardsRail');
@@ -319,6 +320,10 @@ window.addEventListener('scroll', () => {
   lastScrollY = window.scrollY;
 
   scrollBlend = Math.min(1, window.scrollY / window.innerHeight);
+
+  if (heroScroll) {
+    heroScroll.style.opacity = Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.2));
+  }
 
   if (delta >= MIN_DELTA_PX && !cardsRafScheduled) {
     cardsRafScheduled = true;
