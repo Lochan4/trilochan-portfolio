@@ -114,21 +114,41 @@ function cacheLetterPositions() {
    Uses both normX and normY so the wave diagonal matches the shader.
 ================================================================ */
 
-let infoCharEls = [];
-let infoCharPos = []; // { normX, normY }
+let infoCharEls  = [];
+let infoCharPos  = []; // { normX, normY }
+let infoCharBase = []; // 255 for title, 120 for sub
 
 function buildHeroInfo() {
   if (!heroInfo || typeof infoItems === 'undefined') return;
   infoItems.forEach(item => {
-    const line = document.createElement('div');
-    line.className = 'hero-info-item';
-    [...item].forEach(char => {
+    const group = document.createElement('div');
+    group.className = 'hero-info-group';
+
+    // Title row
+    const titleEl = document.createElement('div');
+    titleEl.className = 'hero-info-title';
+    [...item.title].forEach(char => {
       const span = document.createElement('span');
       span.textContent = char;
-      line.appendChild(span);
+      titleEl.appendChild(span);
       infoCharEls.push(span);
+      infoCharBase.push(255);
     });
-    heroInfo.appendChild(line);
+    group.appendChild(titleEl);
+
+    // Subtitle row
+    const subEl = document.createElement('div');
+    subEl.className = 'hero-info-sub';
+    [...item.sub].forEach(char => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      subEl.appendChild(span);
+      infoCharEls.push(span);
+      infoCharBase.push(120);
+    });
+    group.appendChild(subEl);
+
+    heroInfo.appendChild(group);
   });
 }
 
@@ -176,13 +196,15 @@ function ditherRender() {
   }
 
   // --- Info list letter inversion ---
+  // Title chars: 255 at rest → 0 at crest (same as name)
+  // Sub chars:   120 at rest → 0 at crest (dimmer, subordinate)
   if (infoCharPos.length) {
     infoCharEls.forEach((el, i) => {
       const { normX, normY } = infoCharPos[i];
       const rp   = normY * 0.06;
       const d    = (normX + rp) - (wavePos - WAVE_W);
       const lift = (d >= 0.0 && d <= WAVE_W) ? Math.sin((d / WAVE_W) * Math.PI) : 0.0;
-      const v    = Math.round(255 * (1.0 - lift));
+      const v    = Math.round(infoCharBase[i] * (1.0 - lift));
       el.style.color = `rgb(${v},${v},${v})`;
     });
   }

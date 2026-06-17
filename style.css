@@ -41,26 +41,44 @@ body {
   z-index: 0;
 }
 
-/* Info list — right side of hero, same wave effect as name */
+/* Info list — right side of hero, old-magazine sidebar style */
 .hero-info {
   position: absolute;
-  right: clamp(40px, 6vw, 100px);
+  right: 28px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
   pointer-events: none;
   user-select: none;
+  text-align: right;
 }
 
-.hero-info-item {
+.hero-info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hero-info-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: clamp(10px, 0.9vw, 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.hero-info-sub {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 300;
-  font-size: clamp(10px, 1vw, 13px);
+  font-size: clamp(9px, 0.75vw, 11px);
+  letter-spacing: 0.1em;
   color: #fff;
-  letter-spacing: 0.12em;
   white-space: nowrap;
   line-height: 1;
 }
