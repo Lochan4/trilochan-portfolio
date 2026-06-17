@@ -4,21 +4,20 @@
    DOM REFERENCES
 ================================================================ */
 
-const heroEl      = document.getElementById('hero');
-const heroCanvas  = document.getElementById('heroCanvas');
-const heroBgCards = document.getElementById('heroBgCards');
-const heroScroll  = document.getElementById('heroScroll');
-const cardsTrack  = document.getElementById('cardsTrack');
-const cardsScene  = document.getElementById('cardsScene');
-const cardsRail   = document.getElementById('cardsRail');
+const heroEl     = document.getElementById('hero');
+const heroCanvas = document.getElementById('heroCanvas');
+const heroInfo   = document.getElementById('heroInfo');
+const cardsTrack = document.getElementById('cardsTrack');
+const cardsScene = document.getElementById('cardsScene');
+const cardsRail  = document.getElementById('cardsRail');
 
 /* ================================================================
    HERO: WebGL Wave Beam
 
    Simplified shader — no procedural texture. Just a white sine-bell
-   glow band sweeping left→right on black. The background "content"
-   is revealed by JS-driven opacity on the .hero-bg-card elements,
-   not by the shader itself.
+   glow band sweeping left→right on black. The name letters and info
+   list characters are revealed by JS-driven color inversion synced
+   to the same wave position.
 ================================================================ */
 
 let gl, ditherProgram;
@@ -35,8 +34,6 @@ const VS = `
     gl_Position = vec4(a_pos, 0.0, 1.0);
   }`;
 
-/* Wave beam only — no noise texture.
-   Cards are HTML elements; the shader just provides the glow light. */
 const FS = `
   precision mediump float;
   varying vec2  v_uv;
@@ -49,7 +46,6 @@ const FS = `
     float d    = (v_uv.x + rp) - (u_wave - ww);
     float beam = (d >= 0.0 && d <= ww) ? sin((d/ww)*3.14159) : 0.0;
 
-    /* Fade beam out as user scrolls hero out of view */
     float fade = max(0.0, 1.0 - u_scroll * 2.5);
     float glow = beam * 0.18 * fade;
 
@@ -113,47 +109,45 @@ function cacheLetterPositions() {
 }
 
 /* ================================================================
-   HERO BG CARDS: wave-reveal
-   Cards start near-invisible (opacity 0.03).
-   As the wave beam sweeps over each card, its opacity climbs to ~0.73,
-   then falls back. Effect fades completely as user scrolls away.
+   HERO INFO LIST: wave-synced color inversion
+   Each character gets the same white→black inversion as the name.
+   Uses both normX and normY so the wave diagonal matches the shader.
 ================================================================ */
 
-let bgCardEls    = [];
-let bgCardRanges = [];
+let infoCharEls = [];
+let infoCharPos = []; // { normX, normY }
 
-function escHtml(s) {
-  return String(s).replace(/[&<>"']/g, c =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
-  );
-}
-
-function buildHeroBgCards() {
-  // Only use first 4 items to keep the rhombus layout intact (nth-child 1–4)
-  content.slice(0, 4).forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'hero-bg-card';
-    card.innerHTML = `
-      <span class="hero-bg-card-label">${escHtml(item.label)}</span>
-      <span class="hero-bg-card-heading">${escHtml(item.heading)}</span>
-    `;
-    heroBgCards.appendChild(card);
-    bgCardEls.push(card);
+function buildHeroInfo() {
+  if (!heroInfo || typeof infoItems === 'undefined') return;
+  infoItems.forEach(item => {
+    const line = document.createElement('div');
+    line.className = 'hero-info-item';
+    [...item].forEach(char => {
+      const span = document.createElement('span');
+      span.textContent = char;
+      line.appendChild(span);
+      infoCharEls.push(span);
+    });
+    heroInfo.appendChild(line);
   });
 }
 
-function cacheBgCardRanges() {
+function cacheInfoCharPositions() {
   const W = window.innerWidth;
-  bgCardRanges = bgCardEls.map(el => {
+  const H = window.innerHeight;
+  infoCharPos = infoCharEls.map(el => {
     const r = el.getBoundingClientRect();
-    return { left: r.left / W, right: r.right / W };
+    return {
+      normX: (r.left + r.width * 0.5) / W,
+      normY: (r.top  + r.height * 0.5) / H,
+    };
   });
 }
 
 /* ================================================================
    RENDER LOOP
-   All three effects share one rAF loop: wave beam (WebGL),
-   letter inversion (DOM color), card reveal (DOM opacity).
+   All effects share one rAF loop: wave beam (WebGL),
+   name letter inversion (DOM), info list inversion (DOM).
 ================================================================ */
 
 function ditherRender() {
@@ -170,10 +164,9 @@ function ditherRender() {
   gl.uniform1f(uScroll, scrollBlend);
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-  // --- Letter inversion (CPU, same wave formula) ---
-  // rp = 0.5 * 0.06 = 0.03 (letters sit at y ≈ 0.5 of viewport)
+  // --- Name letter inversion ---
   if (heroLetterEls.length) {
-    const rp = 0.03;
+    const rp = 0.03; // y ≈ 0.5, so rp = 0.5 * 0.06
     heroLetterEls.forEach((el, i) => {
       const d    = (letterNormX[i] + rp) - (wavePos - WAVE_W);
       const lift = (d >= 0.0 && d <= WAVE_W) ? Math.sin((d / WAVE_W) * Math.PI) : 0.0;
@@ -182,21 +175,15 @@ function ditherRender() {
     });
   }
 
-  // --- Card reveal (opacity driven by wave overlap) ---
-  if (bgCardRanges.length) {
-    const beamLeft  = wavePos - WAVE_W;
-    const beamRight = wavePos;
-    // Fade all cards out as user scrolls the hero away
-    const heroFade  = Math.max(0, 1 - scrollBlend * 4);
-
-    bgCardEls.forEach((el, i) => {
-      const { left, right } = bgCardRanges[i];
-      const cardW    = right - left;
-      const overlap  = Math.max(0, Math.min(beamRight, right) - Math.max(beamLeft, left));
-      const norm     = cardW > 0 ? overlap / cardW : 0;
-      // sin-smooth for soft edge fade (not a hard cut)
-      const smoothed = Math.sin(norm * Math.PI * 0.5);
-      el.style.opacity = ((0.08 + smoothed * 0.77) * heroFade).toFixed(3);
+  // --- Info list letter inversion ---
+  if (infoCharPos.length) {
+    infoCharEls.forEach((el, i) => {
+      const { normX, normY } = infoCharPos[i];
+      const rp   = normY * 0.06;
+      const d    = (normX + rp) - (wavePos - WAVE_W);
+      const lift = (d >= 0.0 && d <= WAVE_W) ? Math.sin((d / WAVE_W) * Math.PI) : 0.0;
+      const v    = Math.round(255 * (1.0 - lift));
+      el.style.color = `rgb(${v},${v},${v})`;
     });
   }
 }
@@ -211,7 +198,13 @@ function ditherRender() {
 
 let cardEls       = [];
 let cardsTrackTop = 0;
-const PAD_SCREENS = 0.4; // breathing room at start + end
+const PAD_SCREENS = 0.4;
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+  );
+}
 
 function buildCards() {
   const totalStr = String(content.length).padStart(2, '0');
@@ -220,8 +213,6 @@ function buildCards() {
     card.className = 'card';
     if (item.url) card.dataset.url = item.url;
 
-    // Content sits inside .card-face so the press scale animation
-    // doesn't conflict with the JS-controlled 3D transform on .card
     card.innerHTML = `
       <div class="card-face">
         <span class="card-label">${escHtml(item.label)}</span>
@@ -233,7 +224,6 @@ function buildCards() {
       </div>
     `;
 
-    // Click: let :active press animation play, then open URL
     card.addEventListener('click', () => {
       const url = card.dataset.url;
       if (!url) return;
@@ -245,9 +235,6 @@ function buildCards() {
   });
 }
 
-/* Set rail padding so card 1 naturally sits at viewport center (tx=0).
-   Same padding on both sides so the last card also lands at center
-   when the rail is fully scrolled. No measurement hackery needed. */
 function setRailCenterPadding() {
   if (window.innerWidth <= 768 || !cardEls.length) return;
   const cardW = cardEls[0].offsetWidth;
@@ -261,7 +248,6 @@ function setCardsTrackHeight() {
     cardsTrack.style.height = 'auto';
     return;
   }
-  // Total travel = distance to scroll the full rail through the viewport
   const railW    = cardsRail.scrollWidth;
   const overflow = Math.max(0, railW - window.innerWidth);
   const totalH   = overflow + window.innerHeight * (1 + PAD_SCREENS * 2);
@@ -284,24 +270,20 @@ function updateCards() {
   const trackH     = parseFloat(cardsTrack.style.height) || 0;
   const scrollable = trackH - window.innerHeight;
 
-  // Map scroll to 0→1 with breathing room at each end
   const padPx    = window.innerHeight * PAD_SCREENS;
   const inner    = scrollable - padPx * 2;
   const raw      = inner > 0 ? (relScroll - padPx) / inner : 0;
   const progress = Math.max(0, Math.min(raw, 1));
-  // Translate left as progress increases. At 0: card 1 centered. At 1: last card centered.
   const tx       = -(progress * maxTx);
 
   cardsRail.style.transform = `translateX(${tx.toFixed(1)}px)`;
 
-  // Per-card 3D tilt: cards angle toward viewer based on their
-  // horizontal distance from the viewport center
   const vwCenter = window.innerWidth * 0.5;
   cardEls.forEach(card => {
     const rect   = card.getBoundingClientRect();
     const center = rect.left + rect.width * 0.5;
     const offset = center - vwCenter;
-    const rotY   = (offset / window.innerWidth) * 22;  // ±22° max
+    const rotY   = (offset / window.innerWidth) * 22;
     const scale  = 1 - Math.min(Math.abs(offset) / (window.innerWidth * 2), 0.1);
     card.style.transform =
       `perspective(1100px) rotateY(${rotY.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
@@ -313,17 +295,13 @@ function updateCards() {
 ================================================================ */
 
 let lastScrollY    = window.scrollY;
-const MIN_DELTA_PX = 6; // ignore trackpad resting micro-movements
+const MIN_DELTA_PX = 6;
 
 window.addEventListener('scroll', () => {
   const delta = Math.abs(window.scrollY - lastScrollY);
   lastScrollY = window.scrollY;
 
   scrollBlend = Math.min(1, window.scrollY / window.innerHeight);
-
-  if (heroScroll) {
-    heroScroll.style.opacity = Math.max(0, 1 - window.scrollY / (window.innerHeight * 0.2));
-  }
 
   if (delta >= MIN_DELTA_PX && !cardsRafScheduled) {
     cardsRafScheduled = true;
@@ -336,7 +314,7 @@ window.addEventListener('scroll', () => {
 ================================================================ */
 
 function init() {
-  // Hero letters
+  // Hero name letters
   heroLetterEls = Array.from(document.querySelectorAll('.hero-name .hl'));
   cacheLetterPositions();
 
@@ -344,9 +322,9 @@ function init() {
   initDitherShader();
   ditherRender();
 
-  // Hero bg cards
-  buildHeroBgCards();
-  requestAnimationFrame(cacheBgCardRanges);
+  // Hero info list
+  buildHeroInfo();
+  requestAnimationFrame(cacheInfoCharPositions);
 
   // Horizontal scroll cards
   buildCards();
@@ -360,7 +338,7 @@ function init() {
 
 window.addEventListener('resize', () => {
   cacheLetterPositions();
-  cacheBgCardRanges();
+  cacheInfoCharPositions();
   setRailCenterPadding();
   setCardsTrackHeight();
   recalcCardsTrackTop();

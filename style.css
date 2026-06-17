@@ -41,71 +41,28 @@ body {
   z-index: 0;
 }
 
-/* Background cards — rhomboid layout.
-   ◆  Card 2 (above center)
-   Card 1 (left middle)          Card 4 (right middle)
-   ◆  Card 3 (below center)
-   Opacity is JS-driven at 60fps — no CSS transition. */
-.hero-bg-cards {
+/* Info list — right side of hero, same wave effect as name */
+.hero-info {
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.hero-bg-card {
-  position: absolute;
-  width: clamp(160px, 18vw, 220px);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  opacity: 0.08;
-}
-
-/* Card 1 — extreme left, vertically centered */
-.hero-bg-card:nth-child(1) {
-  left: clamp(40px, 6vw, 100px);
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* Card 2 — upper center, above the name */
-.hero-bg-card:nth-child(2) {
-  left: 50%;
-  top: 16%;
-  transform: translateX(-50%);
-}
-
-/* Card 3 — lower center, below the name */
-.hero-bg-card:nth-child(3) {
-  left: 50%;
-  bottom: 16%;
-  transform: translateX(-50%);
-}
-
-/* Card 4 — extreme right, same height as card 1 */
-.hero-bg-card:nth-child(4) {
   right: clamp(40px, 6vw, 100px);
   top: 50%;
   transform: translateY(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  pointer-events: none;
+  user-select: none;
 }
 
-.hero-bg-card-label {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.hero-bg-card-heading {
+.hero-info-item {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 300;
-  font-size: clamp(14px, 1.6vw, 19px);
+  font-size: clamp(10px, 1vw, 13px);
   color: #fff;
-  line-height: 1.25;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 /* Name — above canvas and bg cards */
@@ -332,8 +289,8 @@ body {
 
 @media (max-width: 768px) {
 
-  /* Hide hero bg cards — 4 cards don't fit narrow viewports */
-  .hero-bg-cards {
+  /* Hide info list — doesn't fit narrow viewports */
+  .hero-info {
     display: none;
   }
 

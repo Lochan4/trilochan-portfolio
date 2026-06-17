@@ -14,17 +14,15 @@
   <!-- ================================================================
        HERO
        Canvas renders the wave beam (subtle white glow on black).
-       hero-bg-cards holds 4 content cards that are invisible until
-       the wave sweeps over them — each card fades in as the beam
-       passes, hinting at content. User cannot interact until they
-       scroll down to the full cards section below.
+       hero-info holds the info list on the right — each character
+       gets the same wave color-inversion effect as the name.
   ================================================================ -->
   <section class="hero" id="hero">
     <canvas class="hero-canvas" id="heroCanvas"></canvas>
-    <div class="hero-bg-cards" id="heroBgCards"></div>
     <h1 class="hero-name">
       <span class="hl">T</span><span class="hl">r</span><span class="hl">i</span><span class="hl">l</span><span class="hl">o</span><span class="hl">c</span><span class="hl">h</span><span class="hl">a</span><span class="hl">n</span>
     </h1>
+    <div class="hero-info" id="heroInfo"></div>
   </section>
 
   <!-- ================================================================
@@ -68,10 +66,19 @@
 
   <!-- ================================================================
        CONTENT
-       Edit copy here. JS reads this array for both the hero
-       background cards and the full horizontal scroll cards.
+       Edit copy here. JS reads content[] for the horizontal scroll
+       cards and infoItems[] for the hero info list on the right.
   ================================================================ -->
   <script>
+    const infoItems = [
+      "Co-Founder · Leaps",
+      "Founding AI Engineer · 8bit.ai",
+      "Customer Journeys — 40K emails/month",
+      "Neutrino — 96.1% accuracy, eval-validated",
+      "RAG — 4,000+ documents",
+      "LoRA Fine-tuning — 99K cybersecurity pairs",
+    ];
+
     const content = [
       {
         label: "Co-Founder · Leaps",
