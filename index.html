@@ -25,10 +25,6 @@
     <h1 class="hero-name">
       <span class="hl">T</span><span class="hl">r</span><span class="hl">i</span><span class="hl">l</span><span class="hl">o</span><span class="hl">c</span><span class="hl">h</span><span class="hl">a</span><span class="hl">n</span>
     </h1>
-    <div class="hero-scroll" id="heroScroll">
-      <span class="hero-scroll-text">scroll</span>
-      <span class="hero-scroll-arrow"></span>
-    </div>
   </section>
 
   <!-- ================================================================
@@ -78,22 +74,28 @@
   <script>
     const content = [
       {
-        label: "Co-Founder",
+        label: "Co-Founder · Leaps",
         heading: "Stop applying. Start interviewing.",
-        body: "Leaps is a hiring intelligence system that transforms your resume into a continuous, automated job search engine. Answer once — work setup, location, EEOC, skills. Leaps scans live job boards in real time, scores your fit across six dimensions, rewrites your resume line by line, then applies to every matched role for you: filling forms, attaching your resume, answering screening questions. Ghost jobs filtered. Run complete.",
+        body: "We lived this before we built the fix — 2–3 hours per application, tailoring each resume to each job description, applying across roles and hearing nothing back. Work that looks productive but isn't. Time stolen from networking, preparation, learning, and everything outside the search. Market research confirmed what we already felt: every tool in this space solves one step. Resume builders optimize formatting. Job boards surface listings. Auto-apply tools blast resumes into the void. None of them connect. Leaps is an autonomous hiring intelligence system that runs the full sequence: analyzes live job descriptions for your target role, builds a benchmark, scores your profile against it, surfaces every gap. Twelve preference questions build a targeting layer. Resume gets rebuilt — ATS-optimized, enriched with contributions from your GitHub, diffed against the original. Leaps applies across job boards until the queue is empty.",
         url: "https://leaps.to",
       },
       {
         label: "Founding Engineer",
         heading: "I build systems that think",
-        body: "Founding AI Engineer at 8bit.ai — my first role out of college. I joined at the ground floor and shipped enterprise-grade production systems from day one: Customer Journeys, a real-time intent-classification pipeline routing 40K+ customer emails a month and auto-orchestrating 500+ tickets; Neutrino, a multi-agent NL-to-SQL system that killed 90% of manual reporting; and a full AI banking underwriting pipeline — document intake to creditworthiness report — conceived and shipped solo.",
+        body: "Founding AI Engineer at 8bit.ai. Two years shipping production LLM systems — RAG pipelines, multi-agent orchestration, real-time classification at scale. Not demos, not experiments. Systems processing real volume with real stakes.",
         url: "https://www.8bit.ai/",
       },
       {
         label: "8bit.ai",
-        heading: "40,000 emails. Zero triage.",
-        body: "Built Customer Journeys — an LLM-powered intent-routing pipeline processing 40K+ customer emails a month via RabbitMQ. Automated 500+ monthly ticket orchestrations, cut triage time by 35%, and raised SLA compliance by 20%. Replaced manually-compiled weekly reports to business unit heads with automated generation. Cut token costs 40% by summarizing prior conversation context instead of replaying full thread history.",
+        heading: "Enterprise emails. Zero triage.",
+        body: "Customer Journeys: real-time intent-classification over RabbitMQ, processing 40K+ emails per month. Severity scoring routes issues before they escalate — autonomous diagnostic reasoning generates SOP-aligned remediation actions proactively. Multi-modal RAG across 4,000+ documents: 35% accuracy gain, 40% token reduction. Banking underwriting pipeline: conversational agent from document collection through creditworthiness report. Sole architect, end to end.",
         url: "https://www.8bit.ai/",
+      },
+      {
+        label: "Heuretos",
+        heading: "The kill was the move.",
+        body: "Built an AI learning platform. Working product. Entered investor rounds. Competitor monitoring, roadmap viability, and base model improvement rates converged on one answer: CAC would eat us before growth could save us. At 22, I killed every outreach I was dying to close. That clarity is what let me move forward.",
+        url: "https://www.heuretos.com/",
       },
       {
         label: "Neutrino",
@@ -102,15 +104,9 @@
         url: "https://www.8bit.ai/",
       },
       {
-        label: "Heuretos",
-        heading: "The kill was the move.",
-        body: "Co-founded Heuretos, a document intelligence platform. Owned the full commercial operation — market analysis, competitive intelligence, product roadmap, feature-viability triage, and B2B outreach pipeline. Made the call to shut it down: a deliberate strategic exit, not a passive wind-down.",
-        url: "https://www.heuretos.com/",
-      },
-      {
         label: "Research",
         heading: "Fine-tuning at scale",
-        body: "Fine-tuned Phi-2 (2.7B) on ~100K cybersecurity Q&A pairs using LoRA on an H100, with answer-only loss masking and full training/eval/inference scripts so anyone can reproduce it.",
+        body: "Fine-tuned a Large Language Model on 99,866 cybersecurity Q&A pairs using LoRA — 3.1% trainable parameters, NVIDIA H100. Built leaps.to: autonomous job agent that scores resumes against JDs, enhances them, and applies via LinkedIn without human input.",
         url: "https://github.com/Lochan4/cybersecurity-qa-lora",
       },
     ];
