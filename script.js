@@ -63,7 +63,8 @@ let rafScheduled = false;
 
 function setContainerHeight() {
   if (!stickyContainer) return;
-  const h = window.innerHeight * (content.length + 1);
+  // +1 for landing, +1 for name-movement screen, +n for each card
+  const h = window.innerHeight * (content.length + 2);
   stickyContainer.style.height = h + 'px';
 }
 
@@ -101,23 +102,15 @@ function animateName(progress) {
 }
 
 /* Update which info item is lit and which card content shows */
-function updateContent(index, nameProgress) {
-  // Light up the correct info item
+function updateContent(index) {
   infoGroupEls.forEach((g, i) => {
-    g.classList.toggle('active', i === index && nameProgress > 0.4);
+    g.classList.toggle('active', i === index);
   });
-
-  if (index < 0 || index >= content.length || nameProgress < 0.3) {
-    heroContentEl.classList.remove('visible');
-    return;
-  }
 
   const item = content[index];
 
-  // If switching cards, swap content then fade in
   if (index !== activeIndex) {
     heroContentEl.classList.remove('visible');
-    // Brief delay lets the fade-out finish before swapping text
     setTimeout(() => {
       heroContentLabel.textContent   = item.label;
       heroContentHeading.textContent = item.heading;
@@ -133,17 +126,27 @@ function updateContent(index, nameProgress) {
 function updateStickyScroll() {
   rafScheduled = false;
 
-  const vh         = window.innerHeight;
-  const relScroll  = window.scrollY - containerTop;
-  const nameProgress = Math.min(1, relScroll / vh);
-  const cardIndex    = Math.min(
-    content.length - 1,
-    Math.floor(relScroll / vh)
-  );
-  const showCard = relScroll > 0;
+  const vh          = window.innerHeight;
+  const relScroll   = window.scrollY - containerTop;
+  const nameProgress = Math.min(1, Math.max(0, relScroll / vh));
 
   animateName(nameProgress);
-  updateContent(showCard ? cardIndex : -1, nameProgress);
+
+  // Content only appears after name has fully reached top-left
+  if (nameProgress < 1) {
+    heroContentEl.classList.remove('visible');
+    infoGroupEls.forEach(g => g.classList.remove('active'));
+    activeIndex = -1;
+    return;
+  }
+
+  // After name is settled: each subsequent vh shows one card
+  const cardScroll = relScroll - vh;
+  const cardIndex  = Math.min(
+    content.length - 1,
+    Math.max(0, Math.floor(cardScroll / vh))
+  );
+  updateContent(cardIndex);
 }
 
 /* ================================================================
