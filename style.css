@@ -162,14 +162,13 @@ body {
    align-items: stretch makes all cards share the height of the tallest. */
 .cards-rail {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   gap: clamp(20px, 3vw, 40px);
   will-change: transform;
 }
 
 .card {
   flex: 0 0 clamp(280px, 34vw, 460px);
-  min-height: clamp(320px, 48vh, 500px);
   background: #0d0d0d;
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0; /* padding lives on .card-face */
@@ -189,7 +188,7 @@ body {
 .card-face {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 20px;
   flex: 1;
   padding: clamp(28px, 3.5vw, 48px);
   transition: transform 0.1s ease-in;
@@ -238,6 +237,7 @@ body {
   letter-spacing: 0.18em;
   color: rgba(255, 255, 255, 0.16);
   text-align: right;
+  margin-top: auto;
 }
 
 /* ================================================================
