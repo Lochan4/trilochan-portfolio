@@ -29,21 +29,51 @@ body {
 }
 
 /* ================================================================
+   STICKY SCROLL CONTAINER
+   Height set by JS to (content.length + 1) * 100vh.
+   The .hero inside is sticky and stays in view while user scrolls.
+================================================================ */
+
+.sticky-container {
+  position: relative;
+  width: 100%;
+  /* height set by JS */
+}
+
+/* ================================================================
    HERO
 ================================================================ */
 
 .hero {
-  position: relative;
+  position: sticky;
+  top: 0;
   width: 100vw;
   height: 100vh;
   background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
 }
 
-/* Info list — right side of hero, old-magazine sidebar style */
+/* Name — starts centered, animates to top-left via JS */
+.hero-name {
+  position: absolute;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: clamp(48px, 8vw, 88px);
+  color: #A59786;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+  /* initial centered position */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  transition: none; /* JS handles animation via rAF */
+  will-change: transform, font-size, top, left;
+}
+
+/* Info list — right side, magazine sidebar */
 .hero-info {
   position: absolute;
   right: 28px;
@@ -62,6 +92,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  opacity: 0.25;
+  transition: opacity 0.4s ease;
+}
+
+.hero-info-group.active {
+  opacity: 1;
 }
 
 .hero-info-title {
@@ -85,124 +121,50 @@ body {
   line-height: 1;
 }
 
-/* Name — above canvas and bg cards */
-.hero-name {
-  position: relative;
-  z-index: 2;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 400;
-  font-size: clamp(48px, 8vw, 88px);
-  color: #A59786;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+/* Card content — appears in left/center of hero while scrolling */
+.hero-content {
+  position: absolute;
+  left: clamp(32px, 6vw, 80px);
+  bottom: clamp(60px, 8vh, 100px);
+  max-width: min(520px, 48vw);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
   pointer-events: none;
-  user-select: none;
 }
 
-
-/* ================================================================
-   HORIZONTAL CARDS SECTION
-================================================================ */
-
-.cards-track {
-  position: relative;
-  width: 100%;
-  /* height set dynamically by JS */
+.hero-content.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.cards-scene {
-  position: sticky;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  background: #000;
-}
-
-/* Rail translates horizontally as the user scrolls vertically.
-   Left/right padding is set by JS (setRailCenterPadding) so card 1
-   starts centered and the last card ends centered.
-   align-items: stretch makes all cards share the height of the tallest. */
-.cards-rail {
-  display: flex;
-  align-items: center;
-  gap: clamp(20px, 3vw, 40px);
-  will-change: transform;
-}
-
-.card {
-  flex: 0 0 clamp(280px, 34vw, 460px);
-  background: #0d0d0d;
-  border: 1px solid rgba(165, 151, 134, 0.08);
-  padding: 0; /* padding lives on .card-face */
-  display: flex;
-  flex-direction: column;
-  will-change: transform;
-  cursor: pointer;
-  transition: border-color 0.25s ease;
-}
-
-.card:hover {
-  border-color: rgba(165, 151, 134, 0.6);
-}
-
-/* Inner face — receives the press scale so it doesn't conflict
-   with the JS-controlled 3D transform on the outer .card */
-.card-face {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-  padding: clamp(28px, 3.5vw, 48px);
-  transition: transform 0.1s ease-in;
-}
-
-.card:active .card-face {
-  transform: scale(0.96) translateY(4px);
-}
-
-.card-label {
+.hero-content-label {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(165, 151, 134, 0.28);
+  color: rgba(165, 151, 134, 0.4);
 }
 
-.card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.card-heading {
+.hero-content-heading {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 300;
-  font-size: clamp(22px, 2.8vw, 38px);
+  font-size: clamp(20px, 2.4vw, 32px);
   color: #A59786;
-  line-height: 1.15;
+  line-height: 1.2;
   letter-spacing: 0.02em;
 }
 
-.card-text {
+.hero-content-body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(13px, 1.3vw, 16px);
+  font-size: clamp(12px, 1.1vw, 14px);
   font-weight: 300;
-  color: rgba(165, 151, 134, 0.52);
+  color: rgba(165, 151, 134, 0.6);
   line-height: 1.8;
-}
-
-.card-num {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  color: rgba(165, 151, 134, 0.16);
-  text-align: right;
-  margin-top: auto;
 }
 
 /* ================================================================
@@ -266,44 +228,17 @@ body {
 }
 
 /* ================================================================
-   MOBILE — max-width 768px
-   Disable horizontal scroll. Stack cards vertically.
+   MOBILE
 ================================================================ */
 
 @media (max-width: 768px) {
-
-  /* Hide info list — doesn't fit narrow viewports */
   .hero-info {
     display: none;
   }
 
-  /* Cards section: normal vertical layout */
-  .cards-track {
-    height: auto !important;
-  }
-
-  .cards-scene {
-    position: relative !important;
-    height: auto !important;
-    overflow: visible;
-    flex-direction: column;
-    padding: 48px 20px;
-    gap: 20px;
-    align-items: stretch;
-  }
-
-  .cards-rail {
-    flex-direction: column;
-    transform: none !important;
-    padding: 0;
-    gap: 20px;
-    width: 100%;
-  }
-
-  .card {
-    flex: none;
-    width: 100%;
-    min-height: 280px;
-    transform: none !important;
+  .hero-content {
+    max-width: 80vw;
+    left: 20px;
+    bottom: 40px;
   }
 }

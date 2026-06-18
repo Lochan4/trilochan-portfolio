@@ -12,29 +12,26 @@
 <body>
 
   <!-- ================================================================
-       HERO
+       STICKY SCROLL CONTAINER
+       Tall div that creates the scroll room for the sticky hero.
+       Height is set by JS: (content.length + 1) * 100vh
   ================================================================ -->
-  <section class="hero" id="hero">
-    <h1 class="hero-name" id="heroName">Trilochan</h1>
-    <div class="hero-info" id="heroInfo"></div>
-  </section>
+  <div class="sticky-container" id="stickyContainer">
+    <section class="hero" id="hero">
+      <h1 class="hero-name" id="heroName">Trilochan</h1>
+      <div class="hero-info" id="heroInfo"></div>
 
-  <!-- ================================================================
-       HORIZONTAL CARDS SECTION
-       .cards-track is a tall div creating scroll room.
-       .cards-scene is sticky — the rail translates horizontally
-       as the user scrolls vertically.
-  ================================================================ -->
-  <div class="cards-track" id="cardsTrack">
-    <div class="cards-scene" id="cardsScene">
-      <div class="cards-rail" id="cardsRail"></div>
-    </div>
+      <!-- Card content that appears in the hero as you scroll -->
+      <div class="hero-content" id="heroContent">
+        <p class="hero-content-label" id="heroContentLabel"></p>
+        <h2 class="hero-content-heading" id="heroContentHeading"></h2>
+        <p class="hero-content-body" id="heroContentBody"></p>
+      </div>
+    </section>
   </div>
 
   <!-- ================================================================
        FOOTER / CONTACT
-       Update LINKEDIN_URL and GITHUB_URL with your actual profile URLs.
-       Gmail compose link uses trilochanmunigela@gmail.com as recipient.
   ================================================================ -->
   <footer class="footer" id="footer">
     <p class="footer-eyebrow">Get in touch</p>
@@ -60,8 +57,6 @@
 
   <!-- ================================================================
        CONTENT
-       Edit copy here. JS reads content[] for the horizontal scroll
-       cards and infoItems[] for the hero info list on the right.
   ================================================================ -->
   <script>
     const infoItems = [
