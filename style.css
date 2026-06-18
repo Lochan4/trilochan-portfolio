@@ -162,7 +162,7 @@ body {
    align-items: stretch makes all cards share the height of the tallest. */
 .cards-rail {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: clamp(20px, 3vw, 40px);
   will-change: transform;
 }
