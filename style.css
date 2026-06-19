@@ -194,11 +194,12 @@ body {
 }
 
 .footer-heading {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Galgo', sans-serif;
   font-weight: 300;
   font-size: clamp(40px, 7vw, 96px);
   color: #A59786;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   line-height: 1;
 }
 
